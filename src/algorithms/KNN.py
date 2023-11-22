@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 
 class K_Nearest_Neighbor:
     def __init__(self, k):
@@ -26,3 +27,14 @@ class K_Nearest_Neighbor:
         unique_categories, counts = np.unique(k_nearest_categories, return_counts=True)
         result = unique_categories[np.argmax(counts)]
         return result
+    
+    ### SAVING AND LOADING METHOD ###
+    def dump(self, filename):
+        with open(filename, "wb") as file:
+            pickle.dump(self, file)
+
+
+    @staticmethod
+    def load(filename):
+        with open(filename, "rb") as file:
+            return pickle.load(file)
