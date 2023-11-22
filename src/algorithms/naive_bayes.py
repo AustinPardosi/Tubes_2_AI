@@ -4,7 +4,7 @@ import pickle
 class Naive_Bayes:
     def __init__(self):
         self.columns_name= ["battery_power", "blue", "clock_speed", "dual_sim", "fc", "four_g", "int_memory", "m_dep", "mobile_wt", "n_cores", "pc", "px_height", "px_width", "ram", "sc_h", "sc_w", "talk_time", "three_g", "touch_screen", "wifi"]
-        self.nominal_columns = ["blue", "dual_sim", "four_g", "m_dep", "n_cores", "three_g", "touch_screen", "wifi"]
+        self.nominal_columns = ["blue", "dual_sim", "four_g", "three_g", "touch_screen", "wifi"]
         self.data_count = 0
         self.label_count = {}
         self.feature_model = {}
@@ -83,7 +83,7 @@ class Naive_Bayes:
 
 # data = pd.read_csv("../../data/data_train.csv")
 # obj = Naive_Bayes()
-# obj.learnFromData(data)
+# obj.learn_from_data(data)
 # validation = pd.read_csv("../../data/data_validation.csv")
 # true = 0
 # for i in range(0, len(validation)):
