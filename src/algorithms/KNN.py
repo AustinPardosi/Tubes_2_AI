@@ -6,16 +6,27 @@ class K_Nearest_Neighbor:
         self.k = k
         self.points = None
         self.categories = None
+        self.trained = False
 
     ### UTILITY METHODS ###
+    def is_trained(self):
+        return self.trained
+    
     def calculate_euclidean_distance(self, point1, point2):
         diff = np.array(point1) - np.array(point2)
         total = np.sum(diff**2)
         result = np.sqrt(total)
         return result
 
+    def reset(self):
+        self.points = None
+        self.categories = None
+
     ### LEARNING METHOD ###
     def fit(self, data):
+        self.reset()
+        self.trained = True
+
         # Learn from data by organizing it into points for each category.
         self.points = {}
         self.categories = data["price_range"].unique()
@@ -50,7 +61,9 @@ class K_Nearest_Neighbor:
     @staticmethod
     def load(filename):
         with open(filename, "rb") as file:
-            return pickle.load(file)
+            model = pickle.load(file)
+            model.trained = True
+            return model
         
 # data = pd.read_csv("D:\Vs Code\Tubes_2_AI\data\data_train.csv")
 # obj = K_Nearest_Neighbor(3)

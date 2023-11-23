@@ -1,21 +1,34 @@
 import math
 import pickle
 
-class Naive_Bayes:
+class NaiveBayes:
     def __init__(self):
         self.columns_name= ["battery_power", "blue", "clock_speed", "dual_sim", "fc", "four_g", "int_memory", "m_dep", "mobile_wt", "n_cores", "pc", "px_height", "px_width", "ram", "sc_h", "sc_w", "talk_time", "three_g", "touch_screen", "wifi"]
         self.nominal_columns = ["blue", "dual_sim", "four_g", "three_g", "touch_screen", "wifi"]
         self.data_count = 0
         self.label_count = {}
         self.feature_model = {}
+        self.trained = False
 
     ### UTILITY METHODS ###
+    def is_trained(self):
+        return self.trained
+    
     def calculate_gauss_probability(self, val, mean, std):
         expo = math.exp(-(math.pow(val - mean, 2) / (2 * math.pow(std, 2))))
         return (1 / (math.sqrt(2 * math.pi) * std)) * expo
 
+    def reset(self):
+        self.data_count = 0
+        self.label_count = {}
+        self.feature_model = {}
+
     ### LEARNING METHOD ###
     def learn_from_data(self, data):
+        # Reset data and set trained as true
+        self.reset()
+        self.trained = True
+
         # Store number of data
         self.data_count = data.shape[0]
 
@@ -78,17 +91,6 @@ class Naive_Bayes:
     @staticmethod
     def load(filename):
         with open(filename, "rb") as file:
-            return pickle.load(file)
-
-
-# data = pd.read_csv("../../data/data_train.csv")
-# obj = Naive_Bayes()
-# obj.learn_from_data(data)
-# validation = pd.read_csv("../../data/data_validation.csv")
-# true = 0
-# for i in range(0, len(validation)):
-#     if (obj.classify(validation.iloc[i]) == validation.iloc[i]["price_range"]):
-#         true += 1
-
-# print(true)
-# print(true/len(validation))
+            model = pickle.load(file)
+            model.trained = True
+            return model
