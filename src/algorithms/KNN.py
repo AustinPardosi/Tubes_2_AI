@@ -5,21 +5,35 @@ class K_Nearest_Neighbor:
     def __init__(self, k):
         self.k = k
         self.points = None
+        self.categories = None
 
-    def euclidean_distance(self, point1, point2):
+    ### UTILITY METHODS ###
+    def calculate_euclidean_distance(self, point1, point2):
         diff = np.array(point1) - np.array(point2)
         total = np.sum(diff**2)
         result = np.sqrt(total)
         return result
 
-    def fit(self, points):
-        self.points = points
+    ### LEARNING METHOD ###
+    def fit(self, data):
+        # Learn from data by organizing it into points for each category.
+        self.points = {}
+        self.categories = data["price_range"].unique()
 
+        for category in self.categories:
+            category_data = data[data["price_range"] == category]
+            features_list = [
+                row.drop("price_range").tolist() for _, row in category_data.iterrows()
+            ]
+            self.points[category] = features_list
+
+    ### CLASSIFYING METHOD ###
     def predict(self, new_point):
+        # Predict the category of a new point using KNN.
         distances = []
         for category, category_points in self.points.items():
             for point in category_points:
-                distance = self.euclidean_distance(point, new_point)
+                distance = self.calculate_euclidean_distance(point, new_point)
                 distances.append([distance, category])
         distances = np.array(distances)
         sorted_distances = distances[distances[:, 0].argsort()]
@@ -27,14 +41,27 @@ class K_Nearest_Neighbor:
         unique_categories, counts = np.unique(k_nearest_categories, return_counts=True)
         result = unique_categories[np.argmax(counts)]
         return result
-    
+
     ### SAVING AND LOADING METHOD ###
     def dump(self, filename):
         with open(filename, "wb") as file:
             pickle.dump(self, file)
 
-
     @staticmethod
     def load(filename):
         with open(filename, "rb") as file:
             return pickle.load(file)
+        
+# data = pd.read_csv("D:\Vs Code\Tubes_2_AI\data\data_train.csv")
+# obj = K_Nearest_Neighbor(3)
+# obj.fit(data)
+
+# validation = pd.read_csv("D:\Vs Code\Tubes_2_AI\data\data_validation.csv")
+
+# true = 0
+# for i in range(len(validation)):
+#     if obj.predict(validation.iloc[i].drop("price_range")) == validation.iloc[i]["price_range"]:
+#         true += 1
+
+# accuracy = true / len(validation)
+# print("Accuracy:", accuracy)
