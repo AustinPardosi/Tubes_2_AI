@@ -6,6 +6,8 @@ class K_Nearest_Neighbor:
         self.k = k
         self.points = None
         self.categories = None
+        self.normalize_params = {}
+        self.columns_to_drop = ["blue", "clock_speed", "dual_sim", "fc", "four_g", "int_memory", "m_dep", "mobile_wt", "n_cores", "pc", "sc_h", "sc_w", "talk_time", "three_g", "touch_screen", "wifi"]
         self.trained = False
 
     ### UTILITY METHODS ###
@@ -27,6 +29,22 @@ class K_Nearest_Neighbor:
         self.reset()
         self.trained = True
 
+        # Drop unuseful columns
+        data.drop(columns = self.columns_to_drop, inplace=True)
+
+        # # Normalize data for KNN
+        column_names = data.columns.tolist()
+        column_names.remove("price_range")
+        for column in column_names:
+            max = data[column].max()
+            min = data[column].min()
+
+            data[column] = (data[column] - min) / (max - min)
+
+            self.normalize_params[column] = {}
+            self.normalize_params[column]["max"] = max
+            self.normalize_params[column]["min"] = min
+
         # Learn from data by organizing it into points for each category.
         self.points = {}
         self.categories = data["price_range"].unique()
@@ -40,6 +58,13 @@ class K_Nearest_Neighbor:
 
     ### CLASSIFYING METHOD ###
     def predict(self, new_point):
+        # Drop unuseful columns
+        new_point = new_point.drop(labels = self.columns_to_drop)
+
+        # Normalize data
+        for column in new_point.keys():
+            new_point[column] = (new_point[column] - self.normalize_params[column]["min"]) / (self.normalize_params[column]["max"] - self.normalize_params[column]["min"])
+
         # Predict the category of a new point using KNN.
         distances = []
         for category, category_points in self.points.items():
@@ -51,7 +76,7 @@ class K_Nearest_Neighbor:
         k_nearest_categories = sorted_distances[: self.k, 1]
         unique_categories, counts = np.unique(k_nearest_categories, return_counts=True)
         result = unique_categories[np.argmax(counts)]
-        return result
+        return int(result)
 
     ### SAVING AND LOADING METHOD ###
     def dump(self, filename):
@@ -64,17 +89,3 @@ class K_Nearest_Neighbor:
             model = pickle.load(file)
             model.trained = True
             return model
-        
-# data = pd.read_csv("D:\Vs Code\Tubes_2_AI\data\data_train.csv")
-# obj = K_Nearest_Neighbor(3)
-# obj.fit(data)
-
-# validation = pd.read_csv("D:\Vs Code\Tubes_2_AI\data\data_validation.csv")
-
-# true = 0
-# for i in range(len(validation)):
-#     if obj.predict(validation.iloc[i].drop("price_range")) == validation.iloc[i]["price_range"]:
-#         true += 1
-
-# accuracy = true / len(validation)
-# print("Accuracy:", accuracy)
