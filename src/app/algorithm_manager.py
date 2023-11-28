@@ -7,7 +7,7 @@ import pandas as pd
 class AlgorithmManager:
     def __init__(self):
         self.naive_bayes = NaiveBayes()
-        self.knn = K_Nearest_Neighbor(3)
+        self.knn = K_Nearest_Neighbor(33)
 
     # Methods to train using algorithm
     def train_knn(self, filename, load_flag):
@@ -26,7 +26,7 @@ class AlgorithmManager:
     
     # Methods to check if algorithm trained or not
     def is_knn_trained(self):
-        pass
+        return self.knn.is_trained()
 
     def is_naive_bayes_trained(self):
         return self.naive_bayes.is_trained()
@@ -41,7 +41,7 @@ class AlgorithmManager:
 
         result_label = []
         for i in range(0, len(test_data)):
-            result_label.append(self.knn.predict(test_data.iloc[i]).drop("price_range"))
+            result_label.append(self.knn.predict(test_data.iloc[i]))
         result_data["price_range"] = result_label
 
         result_data.to_csv(f"../result/{output_filename}", index=False)
@@ -73,7 +73,7 @@ class AlgorithmManager:
         true = 0
 
         for i in range(len(validation_data)):
-            if self.knn.predict(validation_data.iloc[i]).drop("price_range") == validation_data.iloc[i]["price_range"]:
+            if self.knn.predict(validation_data.iloc[i].drop("price_range")) == validation_data.iloc[i]["price_range"]:
                 true += 1
 
         print(f"Jumlah label yang sesuai dengan data: {true}")

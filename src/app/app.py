@@ -43,12 +43,12 @@ class App:
                     else:
                         print("Pastikan anda telah melakukan pelatihan data untuk algoritma Naive Bayes")
                 case "5":
-                    if self.algorithm_manager.is_naive_bayes_trained():
+                    if self.algorithm_manager.is_knn_trained():
                         output_filename = self.ask_saving_options()
                         self.algorithm_manager.dump_knn(output_filename)
                         print("Model berhasil disimpan.")
                     else:
-                        print("Pastikan anda telah melakukan pelatihan data untuk algoritma Naive Bayes")
+                        print("Pastikan anda telah melakukan pelatihan data untuk algoritma KNN")
                 case "6":
                     if self.algorithm_manager.is_naive_bayes_trained():
                         output_filename = self.ask_saving_options()
@@ -57,11 +57,11 @@ class App:
                     else:
                         print("Pastikan anda telah melakukan pelatihan data untuk algoritma Naive Bayes")
                 case "7":
-                    if self.algorithm_manager.is_naive_bayes_trained():
+                    if self.algorithm_manager.is_knn_trained():
                         print("Menilai akurasi algoritma KNN memanfaatkan data_validation.csv.")
                         self.algorithm_manager.test_knn_acc()
                     else:
-                        print("Pastikan anda telah melakukan pelatihan data untuk algoritma Naive Bayes")
+                        print("Pastikan anda telah melakukan pelatihan data untuk algoritma KNN")
                 case "8":
                     if self.algorithm_manager.is_naive_bayes_trained():
                         print("Menilai akurasi algoritma Naive Bayes memanfaatkan data_validation.csv.")
