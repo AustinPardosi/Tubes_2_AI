@@ -19,10 +19,20 @@ y_train = train_data["price_range"]
 X_validation = validation_data.drop("price_range", axis=1)
 y_validation = validation_data["price_range"]
 
-# KNN Implementation
-knn_model = KNeighborsClassifier(n_neighbors=33)
-knn_model.fit(X_train, y_train)
-knn_predictions = knn_model.predict(X_validation)
+
+def preprocess(X): 
+    X = X.drop(["blue", "clock_speed", "dual_sim", "fc", "four_g", "int_memory", "m_dep", "mobile_wt", "n_cores", "pc", "sc_h", "sc_w", "talk_time", "three_g", "touch_screen", "wifi"], axis=1)
+    column_names = X.columns.tolist()
+    for column in column_names:
+        max = X[column].max()
+        min = X[column].min()
+
+        X[column] = (X[column] - min) / (max - min)
+    return X
+
+knn_model = KNeighborsClassifier(n_neighbors=33, algorithm='brute', p=2)
+knn_model.fit(preprocess(X_train), y_train)
+knn_predictions = knn_model.predict(preprocess(X_validation))
 knn_accuracy = accuracy_score(y_validation, knn_predictions)
 print(f"Akurasi KNN: {knn_accuracy}")
 
