@@ -77,7 +77,7 @@ class AlgorithmManager:
                 true += 1
 
         print(f"Jumlah label yang sesuai dengan data: {true}")
-        print(f"Persentase akurasi algoritma Naive Bayes: {(true/len(validation_data))*100}%")
+        print(f"Persentase akurasi algoritma KNN: {(true/len(validation_data))*100}%")
 
     def test_naive_bayes_acc(self):
         validation_data = pd.read_csv("../data/data_validation.csv")
